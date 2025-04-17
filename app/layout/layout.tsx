@@ -1,22 +1,30 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 // import { AppSidebar } from "@/components/app-sidebar"
-import { AppSidebar } from "./appSidebar"
-import { Outlet } from "react-router"
-import { BigSidebar } from "./sidebard"
+import { OuterSidebar } from './outer-sidebar';
+import { Outlet } from 'react-router';
+import { InnerSidebar } from './inner-sidebar';
+import { outerSidebarWidth } from '~/lib/consts-style';
 
 export default function SidebarLayout() {
   return (
     <>
-    
-    <SidebarProvider className="min-h-0" defaultOpen={false}>
-      <AppSidebar />
-    </SidebarProvider>
-    <SidebarProvider defaultOpen>
-      <BigSidebar />
-      <main>
-        <Outlet />
-      </main>
-    </SidebarProvider>
+      <SidebarProvider
+        className="min-h-0"
+        defaultOpen={false}
+        style={
+          {
+            '--sidebar-width-icon': outerSidebarWidth,
+          } as React.CSSProperties
+        }
+      >
+        <OuterSidebar />
+      </SidebarProvider>
+      <SidebarProvider defaultOpen>
+        <InnerSidebar />
+        <main>
+          <Outlet />
+        </main>
+      </SidebarProvider>
     </>
-  )
+  );
 }
