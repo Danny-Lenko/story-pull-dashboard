@@ -5,13 +5,11 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Button } from '~/components/ui/button';
+import { ModeToggle } from './mode-toggle';
 
 // Menu items.
 const items = [
@@ -40,6 +38,10 @@ const items = [
     url: '#',
     icon: Settings,
   },
+  {
+    title: 'Mode',
+    icon: ModeToggle,
+  },
 ];
 
 export function OuterSidebar() {
@@ -51,7 +53,12 @@ export function OuterSidebar() {
           <SidebarGroupContent className="!p-0">
             <SidebarMenu className="gap-3">
               {items.map((item) => (
-                <Button asChild variant="ghost">
+                <Button
+                  asChild
+                  title={item.title}
+                  variant="ghost"
+                  key={item.title}
+                >
                   <a href={item.url}>
                     <item.icon className="!w-5 !h-5" />
                   </a>

@@ -43,27 +43,43 @@ const items = [
 
 export function InnerSidebar() {
   return (
-    <Sidebar className={`translate-x-[${outerSidebarWidth}]`}>
-      {/* // <Sidebar className="translate-x-[56px]"> */}
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+    // <Sidebar className={`translate-x-[${outerSidebarWidth}]`}>
+    <>
+      <Sidebar
+        style={
+          {
+            transform: `translateX(${outerSidebarWidth})`,
+            backgroundColor: 'unset !important',
+          } as React.CSSProperties
+        }
+        className="!bg-amber-50 custom-sidebar-bg"
+      >
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Application</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <a href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+
+      <style>{`
+        .custom-sidebar-bg > * {
+          background-color: var(--color-background);
+        }
+      `}</style>
+    </>
   );
 }
