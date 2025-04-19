@@ -5,7 +5,19 @@ import { InnerSidebar } from './inner-sidebar';
 import { outerSidebarWidth } from '~/lib/consts-style';
 import { ThemeProvider } from '~/components/dedicated/layout/theme-provider';
 
+const sidebarPaths = [
+  '/admin/content-manager',
+  '/admin/content-type-builder',
+  '/admin/settings',
+];
+
 export default function SidebarLayout() {
+  const path = window.location.pathname;
+
+  const isSidebarAllowed = sidebarPaths.some((sidebarPath) =>
+    path.startsWith(sidebarPath)
+  );
+
   return (
     <>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -20,8 +32,8 @@ export default function SidebarLayout() {
         >
           <OuterSidebar />
         </SidebarProvider>
-        <SidebarProvider defaultOpen>
-          <InnerSidebar />
+        <SidebarProvider>
+          {isSidebarAllowed && <InnerSidebar />}
           <main
             style={{
               transform: `translateX(${outerSidebarWidth})`,

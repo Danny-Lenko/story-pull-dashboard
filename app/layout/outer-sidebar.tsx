@@ -1,4 +1,13 @@
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
+import {
+  Home,
+  NotebookPen,
+  Inbox,
+  Search,
+  Settings,
+  Hammer,
+  Images,
+  LibraryBig,
+} from 'lucide-react';
 
 import {
   Sidebar,
@@ -15,27 +24,27 @@ import { ModeToggle } from './mode-toggle';
 const items = [
   {
     title: 'Home',
-    url: '#',
+    url: '/admin',
     icon: Home,
   },
   {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
+    title: 'Content Manager',
+    url: '/admin/content-manager',
+    icon: NotebookPen,
   },
   {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
+    title: 'Media Library',
+    url: '/admin/media-library',
+    icon: LibraryBig,
   },
   {
-    title: 'Search',
-    url: '#',
-    icon: Search,
+    title: 'Content Type Builder',
+    url: '/admin/content-type-builder',
+    icon: Hammer,
   },
   {
     title: 'Settings',
-    url: '#',
+    url: '/admin/settings',
     icon: Settings,
   },
   {

@@ -1,4 +1,11 @@
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
+import {
+  Calendar,
+  Home,
+  Inbox,
+  Search,
+  Settings,
+  ChevronRight,
+} from 'lucide-react';
 
 import {
   Sidebar,
@@ -6,44 +13,36 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { outerSidebarWidth } from '~/lib/consts-style';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '~/components/ui/collapsible';
 
-// Menu items.
-const items = [
-  {
-    title: 'Home',
-    url: '#',
-    icon: Home,
-  },
-  {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
-  },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
-  },
-];
+const mockSidebarItems = {
+  collection: [
+    {
+      title: 'Article',
+      url: '/content-types/api::article.article',
+    },
+    {
+      title: 'Author',
+      url: '/content-types/api::author.author',
+    },
+  ],
+  single: [],
+};
 
 export function InnerSidebar() {
   return (
-    // <Sidebar className={`translate-x-[${outerSidebarWidth}]`}>
     <>
       <Sidebar
         style={
@@ -55,21 +54,50 @@ export function InnerSidebar() {
         className="!bg-amber-50 custom-sidebar-bg"
       >
         <SidebarContent>
+          <SidebarHeader>k</SidebarHeader>
           <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
+              {Object.entries(mockSidebarItems).map(([key, value], index) => (
+                <SidebarMenu>
+                  <Collapsible
+                    defaultOpen={index === 0}
+                    className="group/collapsible"
+                  >
+                    <SidebarMenuItem className="recursive-pointer">
+                      <CollapsibleTrigger
+                        className="collapsible-trigger"
+                        asChild
+                      >
+                        <SidebarMenuButton>
+                          <span>
+                            {key === 'collection'
+                              ? 'Collection Types'
+                              : key === 'single'
+                                ? 'Single Types'
+                                : 'Components'}
+                          </span>
+                          <ChevronRight className="ml-auto transition-transform chevron-icon" />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        {value.map((item) => (
+                          <SidebarMenuSub>
+                            <SidebarMenuSubItem>
+                              <SidebarMenuButton asChild>
+                                <a
+                                  href={`/admin/content-type-builder${item.url}`}
+                                >
+                                  {item.title}
+                                </a>
+                              </SidebarMenuButton>
+                            </SidebarMenuSubItem>
+                          </SidebarMenuSub>
+                        ))}
+                      </CollapsibleContent>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                </SidebarMenu>
+              ))}
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
@@ -78,6 +106,14 @@ export function InnerSidebar() {
       <style>{`
         .custom-sidebar-bg > * {
           background-color: var(--color-background);
+        }
+
+        .collapsible-trigger[data-state="open"] .chevron-icon {
+          transform: rotate(90deg);
+        }
+
+        .recursive-pointer *{
+          cursor: pointer;
         }
       `}</style>
     </>
