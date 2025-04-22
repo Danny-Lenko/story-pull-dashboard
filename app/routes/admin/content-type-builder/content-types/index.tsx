@@ -1,5 +1,5 @@
-import type { Route } from './+types/home';
-import { Welcome } from '../../welcome/welcome';
+import type { Route } from '../../+types/home';
+import { Welcome } from '../../../../welcome/welcome';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,10 +8,12 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+// HERE SHOULD BE REDIRECT TO /content-types/api::...
+
 export default function ContentTypeBuilder() {
   return (
     <>
-      <h1>Content Type Builder</h1>
+      <h1>Content Type Builder / Content Type</h1>
       <Welcome />
     </>
   );

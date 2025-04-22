@@ -26,6 +26,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '~/components/ui/collapsible';
+import { Button } from '~/components/ui/button';
 
 const mockSidebarItems = {
   collection: [
@@ -42,6 +43,15 @@ const mockSidebarItems = {
 };
 
 export function InnerSidebar() {
+  const pathname = window.location.pathname.split('/')[2];
+
+  const headerContent =
+    pathname === 'content-type-builder'
+      ? 'Content Type Builder'
+      : pathname === 'content-manager'
+        ? 'Content Manager'
+        : 'Settings';
+
   return (
     <>
       <Sidebar
@@ -54,7 +64,9 @@ export function InnerSidebar() {
         className="!bg-amber-50 custom-sidebar-bg"
       >
         <SidebarContent>
-          <SidebarHeader>k</SidebarHeader>
+          <SidebarHeader className="m-3 px-0 relative after:content-[''] after:absolute after:w-[25px] after:h-[1px] after:bg-sidebar-border after:-bottom-3 after:left-0">
+            {headerContent}
+          </SidebarHeader>
           <SidebarGroup>
             <SidebarGroupContent>
               {Object.entries(mockSidebarItems).map(([key, value], index) => (
@@ -63,13 +75,13 @@ export function InnerSidebar() {
                     defaultOpen={index === 0}
                     className="group/collapsible"
                   >
-                    <SidebarMenuItem className="recursive-pointer">
+                    <SidebarMenuItem>
                       <CollapsibleTrigger
                         className="collapsible-trigger"
                         asChild
                       >
                         <SidebarMenuButton>
-                          <span>
+                          <span className="uppercase">
                             {key === 'collection'
                               ? 'Collection Types'
                               : key === 'single'
@@ -94,6 +106,16 @@ export function InnerSidebar() {
                           </SidebarMenuSub>
                         ))}
                       </CollapsibleContent>
+                      <Button
+                        className="hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)]"
+                        variant="link"
+                      >
+                        {key === 'collection'
+                          ? 'Create new collection type'
+                          : key === 'single'
+                            ? 'Create new single type'
+                            : 'Create new component'}
+                      </Button>
                     </SidebarMenuItem>
                   </Collapsible>
                 </SidebarMenu>
@@ -110,10 +132,6 @@ export function InnerSidebar() {
 
         .collapsible-trigger[data-state="open"] .chevron-icon {
           transform: rotate(90deg);
-        }
-
-        .recursive-pointer *{
-          cursor: pointer;
         }
       `}</style>
     </>
