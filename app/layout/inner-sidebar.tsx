@@ -1,32 +1,15 @@
 import {
-  Calendar,
-  Home,
-  Inbox,
-  Search,
-  Settings,
-  ChevronRight,
-} from 'lucide-react';
-
-import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { outerSidebarWidth } from '~/lib/consts-style';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '~/components/ui/collapsible';
-import { Button } from '~/components/ui/button';
+
+import MenuSection from '~/components/dedicated/inner-sidebar/menu-section';
+import { useLocation, useNavigate } from 'react-router';
+import { useRedirect } from '~/hooks/use-redirect';
 
 const mockSidebarItems = {
   collection: [
@@ -43,7 +26,14 @@ const mockSidebarItems = {
 };
 
 export function InnerSidebar() {
-  const pathname = window.location.pathname.split('/')[2];
+  useRedirect();
+
+  const location = useLocation();
+  const pathParts = location.pathname.split('/');
+  const pathname = pathParts[2];
+  const paramsPath = '/' + pathParts[3] + '/' + pathParts[4];
+
+  console.log('LOCATION: ', paramsPath);
 
   const headerContent =
     pathname === 'content-type-builder'
@@ -70,55 +60,13 @@ export function InnerSidebar() {
           <SidebarGroup>
             <SidebarGroupContent>
               {Object.entries(mockSidebarItems).map(([key, value], index) => (
-                <SidebarMenu>
-                  <Collapsible
-                    defaultOpen={index === 0}
-                    className="group/collapsible"
-                  >
-                    <SidebarMenuItem>
-                      <CollapsibleTrigger
-                        className="collapsible-trigger"
-                        asChild
-                      >
-                        <SidebarMenuButton>
-                          <span className="uppercase">
-                            {key === 'collection'
-                              ? 'Collection Types'
-                              : key === 'single'
-                                ? 'Single Types'
-                                : 'Components'}
-                          </span>
-                          <ChevronRight className="ml-auto transition-transform chevron-icon" />
-                        </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        {value.map((item) => (
-                          <SidebarMenuSub>
-                            <SidebarMenuSubItem>
-                              <SidebarMenuButton asChild>
-                                <a
-                                  href={`/admin/content-type-builder${item.url}`}
-                                >
-                                  {item.title}
-                                </a>
-                              </SidebarMenuButton>
-                            </SidebarMenuSubItem>
-                          </SidebarMenuSub>
-                        ))}
-                      </CollapsibleContent>
-                      <Button
-                        className="hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)]"
-                        variant="link"
-                      >
-                        {key === 'collection'
-                          ? 'Create new collection type'
-                          : key === 'single'
-                            ? 'Create new single type'
-                            : 'Create new component'}
-                      </Button>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                </SidebarMenu>
+                <MenuSection
+                  key={key}
+                  contentTypes={value}
+                  index={index}
+                  paramsPath={paramsPath}
+                  title={key}
+                />
               ))}
             </SidebarGroupContent>
           </SidebarGroup>

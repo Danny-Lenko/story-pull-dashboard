@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '~/components/ui/button';
 import { ModeToggle } from './mode-toggle';
+import { Link } from 'react-router';
 
 // Menu items.
 const items = [
@@ -68,9 +69,11 @@ export function OuterSidebar() {
                   variant="ghost"
                   key={item.title}
                 >
-                  <a href={item.url}>
+                  {/* <a href={item.url}> */}
+                  <Link to={item.url!}>
                     <item.icon className="!w-5 !h-5" />
-                  </a>
+                  </Link>
+                  {/* </a> */}
                 </Button>
               ))}
             </SidebarMenu>
