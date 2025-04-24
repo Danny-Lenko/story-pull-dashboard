@@ -35,8 +35,10 @@ export default function SidebarLayout() {
         <SidebarProvider>
           {isSidebarAllowed && <InnerSidebar />}
           <main
+            className="w-full overflow-hidden"
             style={{
-              transform: `translateX(${outerSidebarWidth})`,
+              // transform: `translateX(${outerSidebarWidth})`,
+              marginLeft: `${outerSidebarWidth}`,
             }}
           >
             <Outlet />

@@ -1,11 +1,8 @@
-import { Copy } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -15,20 +12,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
 import { useContentTypeStore } from '~/store/contentType';
+import { useNavigate } from 'react-router';
+import { generateSlug } from '~/lib/utils/generate-slug';
+import { pluralize } from '~/lib/utils/pluralize';
+import { capitalizeWords } from '~/lib/utils/capitalize';
 
 export function CreateButton({ title }: { title: string }) {
+  const navigate = useNavigate();
+
   const [userInput, setUserInput] = useState('');
   const [singularSlug, setSingularSlug] = useState('');
   const [pluralSlug, setPluralSlug] = useState('');
 
-  const isSecondDialogOpen = useContentTypeStore(
-    (state) => state.isSecondDialogOpen
-  );
-
-  console.log('IS SECOND DIALOG OPEN: ', isSecondDialogOpen);
-
   const defineContentType = useContentTypeStore(
-    (state) => state.defineContentType
+    (state) => state.defineNewContentType
   );
 
   const openSecondDialog = useContentTypeStore(
@@ -36,45 +33,21 @@ export function CreateButton({ title }: { title: string }) {
   );
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInput(event.target.value);
-  };
-
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-') // Replace spaces with dashes
-      .replace(/[^\w\-]+/g, '') // Remove all non-word characters
-      .replace(/\-\-+/g, '-') // Replace multiple dashes with a single dash
-      .replace(/^-+/, '') // Remove dashes at the beginning
-      .replace(/-+$/, ''); // Remove dashes at the end
-  };
-
-  const pluralize = (word: string) => {
-    if (!word) return '';
-
-    if (word.endsWith('y')) {
-      return word.slice(0, -1) + 'ies';
-    } else if (
-      word.endsWith('s') ||
-      word.endsWith('x') ||
-      word.endsWith('z') ||
-      word.endsWith('ch') ||
-      word.endsWith('sh')
-    ) {
-      return word + 'es';
-    } else {
-      return word + 's';
-    }
+    // setUserInput(event.target.value);
+    const capitalizedValue = capitalizeWords(event.target.value);
+    setUserInput(capitalizedValue);
   };
 
   const handleContinue = () => {
+    openSecondDialog();
     setUserInput('');
     defineContentType({
       name: userInput,
       url: singularSlug,
     });
-    openSecondDialog();
+    navigate(
+      `admin/content-type-builder/content-types/api::${singularSlug}.${singularSlug}`
+    );
   };
 
   useEffect(() => {
@@ -84,7 +57,11 @@ export function CreateButton({ title }: { title: string }) {
   }, [userInput]);
 
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={(open) => {
+        if (!open) setUserInput('');
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           className="hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)]"

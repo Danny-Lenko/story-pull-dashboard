@@ -15,6 +15,8 @@ import { Button } from '~/components/ui/button';
 import { Label } from '~/components/ui/label';
 import { Input } from '~/components/ui/input';
 import { useContentTypeStore } from '~/store/contentType';
+import { SecondDialogContent } from '~/components/dedicated/admin/content-type-builder/content-types/type/second-dialog-content';
+import { useResetContentTypeOnUrlChange } from '~/hooks/use-reset-content-type-on-url-change';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -23,10 +25,16 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// HERE SHOULD BE REDIRECT TO /content-types/api::...
+// TODO: REDIRECT ON PAGE REFRESH, because state gets reset and the route does not
 
 export default function ContentTypeBuilder() {
-  const { contentType } = useParams<{ contentType: string }>();
+  // const { contentType } = useParams<{ contentType: string }>();
+
+  // console.log('CONTENT TYPE: ', contentType);
+
+  useResetContentTypeOnUrlChange();
+
+  const contentType = useContentTypeStore((state) => state.newContentType);
 
   const isSecondDialogOpen = useContentTypeStore(
     (state) => state.isSecondDialogOpen
@@ -42,68 +50,44 @@ export default function ContentTypeBuilder() {
 
   return (
     <>
-      <h1>Content Type Builder / Content Type / :Type</h1>
-      <Button
-        className="hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)]"
-        variant="link"
-        onClick={() => {
-          openSecondDialog();
-        }}
-      >
-        ANOTHER TRIGGER
-      </Button>
+      <div className="flex items-center px-14 py-12 border-1 w-full">
+        <div>
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight ">
+            {contentType?.name || 'Content Type Builder'}
+          </h1>
+          <p className="text-muted-foreground">
+            Build the data architecture of your content
+          </p>
+        </div>
+        <Button
+          className="ml-auto hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)]"
+          variant="outline"
+          onClick={() => {
+            openSecondDialog();
+          }}
+        >
+          + Add another field
+        </Button>
+      </div>
+      <div className="flex flex-col border-1 p-14 w-full"></div>
+
       <Dialog
         open={isSecondDialogOpen}
         onOpenChange={(open) => {
           if (!open) closeSecondDialog();
         }}
       >
-        <DialogTrigger asChild>
-          <Button
-            className="hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)]"
-            variant="link"
-          >
-            + Add another field
-          </Button>
-        </DialogTrigger>
-        {/* <DialogOverlay onClick={() => console.log('Overlay Clicked!')} /> */}
         <DialogContent className="sm:max-w-md gap-6">
           <DialogHeader className="border-b pb-6">
             <DialogTitle>DIALOG</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-5 items-center space-x-2">
-            <div className="grid flex-1 gap-2 w-full">
-              <Label htmlFor="name">Display name</Label>
-              {/* <Input id="name" onChange={handleInputChange} value={userInput} /> */}
-            </div>
-            <div className="grid flex-1 gap-2 w-full">
-              <Label htmlFor="singular">API ID (Singular)</Label>
-              {/* <Input id="singular" readOnly value={singularSlug} disabled /> */}
-              <span className="text-xs text-muted-foreground">
-                The UID is used to generate the API routes and databases
-                tables/collections
-              </span>
-            </div>
-            <div className="grid flex-1 gap-2 w-full">
-              <Label htmlFor="plural">API ID (Plural)</Label>
-              {/* <Input id="plural" readOnly value={pluralSlug} disabled /> */}
-            </div>
-          </div>
+          <SecondDialogContent />
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
               <Button type="button" variant="secondary">
                 Close
               </Button>
             </DialogClose>
-            {/* <DialogClose asChild>
-              <Button
-                className="ml-auto flex gap-2 items-center"
-                disabled={!userInput}
-                onClick={handleContinue}
-              >
-                Continue
-              </Button>
-            </DialogClose> */}
           </DialogFooter>
         </DialogContent>
       </Dialog>

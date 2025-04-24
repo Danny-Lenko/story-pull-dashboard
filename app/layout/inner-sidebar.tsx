@@ -7,9 +7,8 @@ import {
 } from '@/components/ui/sidebar';
 import { outerSidebarWidth } from '~/lib/consts-style';
 
-import MenuSection from '~/components/dedicated/inner-sidebar/menu-section';
+import MenuSection from '~/components/dedicated/layout/inner-sidebar/menu-section';
 import { useLocation, useNavigate } from 'react-router';
-import { useRedirect } from '~/hooks/use-redirect';
 
 const mockSidebarItems = {
   collection: [
@@ -26,8 +25,6 @@ const mockSidebarItems = {
 };
 
 export function InnerSidebar() {
-  useRedirect();
-
   const location = useLocation();
   const pathParts = location.pathname.split('/');
   const pathname = pathParts[2];
