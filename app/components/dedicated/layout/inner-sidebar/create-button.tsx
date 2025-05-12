@@ -12,28 +12,24 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
 import { useContentTypeStore } from '~/store/contentType';
-import { useNavigate } from 'react-router';
 import { generateSlug } from '~/lib/utils/generate-slug';
 import { pluralize } from '~/lib/utils/pluralize';
 import { capitalizeWords } from '~/lib/utils/capitalize';
 
+import { useCreateContentTypes } from '~/hooks/use-create-content-type';
+
 export function CreateButton({ title }: { title: string }) {
-  const navigate = useNavigate();
+  const { createContentType } = useCreateContentTypes();
 
   const [userInput, setUserInput] = useState('');
   const [singularSlug, setSingularSlug] = useState('');
   const [pluralSlug, setPluralSlug] = useState('');
-
-  const defineContentType = useContentTypeStore(
-    (state) => state.defineNewContentType
-  );
 
   const openSecondDialog = useContentTypeStore(
     (state) => state.openSecondDialog
   );
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // setUserInput(event.target.value);
     const capitalizedValue = capitalizeWords(event.target.value);
     setUserInput(capitalizedValue);
   };
@@ -41,12 +37,13 @@ export function CreateButton({ title }: { title: string }) {
   const handleContinue = () => {
     openSecondDialog();
     setUserInput('');
-    defineContentType({
-      name: userInput,
-      url: singularSlug,
-    });
-    navigate(
-      `admin/content-type-builder/content-types/api::${singularSlug}.${singularSlug}`
+
+    createContentType(
+      `admin/content-type-builder/content-types/api::${singularSlug}.${singularSlug}`,
+      {
+        name: userInput,
+        url: singularSlug,
+      }
     );
   };
 

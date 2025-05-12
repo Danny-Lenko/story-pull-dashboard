@@ -1,6 +1,4 @@
-import { useParams } from 'react-router';
 import type { Route } from '../../+types/home';
-import { Welcome } from '../../../../welcome/welcome';
 import {
   Dialog,
   DialogClose,
@@ -8,15 +6,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogOverlay,
+  DialogDescription,
 } from '~/components/ui/dialog';
 import { Button } from '~/components/ui/button';
-import { Label } from '~/components/ui/label';
-import { Input } from '~/components/ui/input';
 import { useContentTypeStore } from '~/store/contentType';
 import { SecondDialogContent } from '~/components/dedicated/admin/content-type-builder/content-types/type/second-dialog-content';
-import { useResetContentTypeOnUrlChange } from '~/hooks/use-reset-content-type-on-url-change';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -26,15 +20,12 @@ export function meta({}: Route.MetaArgs) {
 }
 
 // TODO: REDIRECT ON PAGE REFRESH, because state gets reset and the route does not
+// TODO: ADD TITLES FROM EXISTING CONTENT TYPES
 
 export default function ContentTypeBuilder() {
-  // const { contentType } = useParams<{ contentType: string }>();
-
-  // console.log('CONTENT TYPE: ', contentType);
-
-  useResetContentTypeOnUrlChange();
-
   const contentType = useContentTypeStore((state) => state.newContentType);
+
+  console.log('Content Type:', contentType);
 
   const isSecondDialogOpen = useContentTypeStore(
     (state) => state.isSecondDialogOpen
@@ -79,7 +70,12 @@ export default function ContentTypeBuilder() {
       >
         <DialogContent className="sm:max-w-md gap-6">
           <DialogHeader className="border-b pb-6">
-            <DialogTitle>DIALOG</DialogTitle>
+            <DialogTitle>
+              {contentType?.name || 'Content Type Builder'}
+            </DialogTitle>
+            <DialogDescription>
+              Select a field for your collection type
+            </DialogDescription>
           </DialogHeader>
           <SecondDialogContent />
           <DialogFooter className="sm:justify-start">

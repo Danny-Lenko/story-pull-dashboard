@@ -1,24 +1,42 @@
 import { create } from 'zustand';
 
-interface ContentType {
+export interface ContentType {
   name: string;
   url: string;
 }
 
 interface ContentTypeStore {
-  newContentType: ContentType | null;
   isSecondDialogOpen: boolean;
+  isContentTypeCreation: boolean;
+
+  newContentType: ContentType | null;
+  pendingContentType: ContentType | null;
+
+  openSecondDialog: () => void;
+  closeSecondDialog: () => void;
+
+  startContentTypeCreation: () => void;
+  stopContentTypeCreation: () => void;
 
   resetNewContentType: () => void;
   defineNewContentType: (payload: ContentType) => void;
 
-  openSecondDialog: () => void;
-  closeSecondDialog: () => void;
+  resetPendingContentType: () => void;
+  definePendingContentType: (payload: ContentType) => void;
 }
 
 export const useContentTypeStore = create<ContentTypeStore>()((set) => ({
-  newContentType: null,
   isSecondDialogOpen: false,
+  isContentTypeCreation: false,
+
+  newContentType: null,
+  pendingContentType: null,
+
+  openSecondDialog: () => set({ isSecondDialogOpen: true }),
+  closeSecondDialog: () => set({ isSecondDialogOpen: false }),
+
+  startContentTypeCreation: () => set({ isContentTypeCreation: true }),
+  stopContentTypeCreation: () => set({ isContentTypeCreation: false }),
 
   resetNewContentType: () => set({ newContentType: null }),
   defineNewContentType: (payload: ContentType) =>
@@ -29,6 +47,12 @@ export const useContentTypeStore = create<ContentTypeStore>()((set) => ({
       },
     })),
 
-  openSecondDialog: () => set({ isSecondDialogOpen: true }),
-  closeSecondDialog: () => set({ isSecondDialogOpen: false }),
+  resetPendingContentType: () => set({ pendingContentType: null }),
+  definePendingContentType: (payload: ContentType) =>
+    set(() => ({
+      pendingContentType: {
+        name: payload.name,
+        url: `/content-types/api::${payload.url}.${payload.url}`,
+      },
+    })),
 }));
