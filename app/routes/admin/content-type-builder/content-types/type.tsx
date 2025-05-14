@@ -11,6 +11,8 @@ import {
 import { Button } from '~/components/ui/button';
 import { useContentTypeStore } from '~/store/contentType';
 import { SecondDialogContent } from '~/components/dedicated/admin/content-type-builder/content-types/type/second-dialog-content';
+import { useNavigate } from 'react-router';
+import { withContentTypeGuard } from '~/lib/hoc/withContentTypeGuard';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -19,13 +21,12 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// TODO: REDIRECT ON PAGE REFRESH, because state gets reset and the route does not
 // TODO: ADD TITLES FROM EXISTING CONTENT TYPES
 
-export default function ContentTypeBuilder() {
-  const contentType = useContentTypeStore((state) => state.newContentType);
+function ContentTypePage() {
+  const navigate = useNavigate();
 
-  console.log('Content Type:', contentType);
+  const contentType = useContentTypeStore((state) => state.newContentType);
 
   const isSecondDialogOpen = useContentTypeStore(
     (state) => state.isSecondDialogOpen
@@ -90,3 +91,5 @@ export default function ContentTypeBuilder() {
     </>
   );
 }
+
+export default withContentTypeGuard(ContentTypePage);

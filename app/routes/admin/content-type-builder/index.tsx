@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import type { Route } from '../+types/home';
 import { Welcome } from '../../../welcome/welcome';
 import { useEffect } from 'react';
+import { useContentTypeStore } from '~/store/contentType';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -38,6 +39,10 @@ const mockSidebarItems: {
 // TODO: SET IT UP WITH API DATA
 
 export default function ContentTypeBuilder() {
+  const contentType = useContentTypeStore((state) => state.newContentType);
+
+  console.log('INDEX CONTENT TYPE:', contentType);
+
   // const navigate = useNavigate();
 
   // useEffect(() => {

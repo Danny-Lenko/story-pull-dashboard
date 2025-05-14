@@ -29,7 +29,7 @@ export const useCreateContentTypes = () => {
     (state) => state.resetPendingContentType
   );
 
-  const ensureSameNavigationLevel = (path: string) => {
+  const isSameNavigationLevel = (path: string) => {
     const pattern = /content-types\/api::[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+$/;
 
     return pattern.test(path);
@@ -101,25 +101,25 @@ export const useCreateContentTypes = () => {
       );
 
       if (confirmed) {
-        if (ensureSameNavigationLevel(blocker.location.pathname)) {
-          defineContentType({ name, url });
-          blocker.proceed();
+        resetContentType();
+
+        // Reset state first before navigation to prevent state leakage
+        if (!isSameNavigationLevel(blocker.location.pathname)) {
+          // If navigating to a different level, reset states immediately
+          resetPendingContentType();
+          resetContentType();
         } else {
-          blocker.proceed();
-
-          const timeoutId = setTimeout(() => {
-            resetPendingContentType();
-            resetContentType();
-          }, 1000);
-
-          return () => clearTimeout(timeoutId);
+          // If staying at the same level, update content type
+          defineContentType({ name, url });
         }
+
+        // Then proceed with navigation
+        blocker.proceed();
       } else {
         blocker.reset();
       }
-    } else {
       // if no new content yet, define it. Return if it exists, which means the confirmation is needed
-      if (newName) return;
+    } else if (!newName) {
       defineContentType({ name, url });
     }
   }, [blocker, pendingContentType]);
