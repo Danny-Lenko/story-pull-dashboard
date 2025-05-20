@@ -2,7 +2,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { OuterSidebar } from './outer-sidebar';
 import { Outlet } from 'react-router';
 import { InnerSidebar } from './inner-sidebar';
-import { outerSidebarWidth } from '~/lib/consts-style';
+import { outerSidebarWidth } from '~/lib/const/consts-style';
 import { ThemeProvider } from '~/components/dedicated/layout/theme-provider';
 
 const sidebarPaths = [

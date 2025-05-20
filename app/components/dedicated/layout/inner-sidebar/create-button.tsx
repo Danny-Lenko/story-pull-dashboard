@@ -25,8 +25,8 @@ export function CreateButton({ title }: { title: string }) {
   const [singularSlug, setSingularSlug] = useState('');
   const [pluralSlug, setPluralSlug] = useState('');
 
-  const openSecondDialog = useContentTypeStore(
-    (state) => state.openSecondDialog
+  const openAttributeDialog = useContentTypeStore(
+    (state) => state.openAttributeDialog
   );
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +35,7 @@ export function CreateButton({ title }: { title: string }) {
   };
 
   const handleContinue = () => {
-    openSecondDialog();
+    openAttributeDialog();
     setUserInput('');
 
     createContentType(

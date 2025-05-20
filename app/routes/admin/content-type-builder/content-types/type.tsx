@@ -1,18 +1,13 @@
 import type { Route } from '../../+types/home';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '~/components/ui/dialog';
+import { Dialog, DialogContent } from '~/components/ui/dialog';
 import { Button } from '~/components/ui/button';
 import { useContentTypeStore } from '~/store/contentType';
-import { SecondDialogContent } from '~/components/dedicated/admin/content-type-builder/content-types/type/second-dialog-content';
-import { useNavigate } from 'react-router';
 import { withContentTypeGuard } from '~/lib/hoc/withContentTypeGuard';
+import { Check, Plus } from 'lucide-react';
+import { FirstStepAttributeDialog } from '~/components/dedicated/admin/content-type-builder/content-types/type/first-step-attribute-dialog';
+import { useState } from 'react';
+
+// TODO: ADD TITLES FROM EXISTING CONTENT TYPES
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -21,24 +16,22 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// TODO: ADD TITLES FROM EXISTING CONTENT TYPES
-
 function ContentTypePage() {
-  const navigate = useNavigate();
-
   const contentType = useContentTypeStore((state) => state.newContentType);
 
-  const isSecondDialogOpen = useContentTypeStore(
-    (state) => state.isSecondDialogOpen
+  const isAttributeDialogOpen = useContentTypeStore(
+    (state) => state.isAttributeDialogOpen
   );
 
-  const openSecondDialog = useContentTypeStore(
-    (state) => state.openSecondDialog
+  const openAttributeDialog = useContentTypeStore(
+    (state) => state.openAttributeDialog
   );
 
-  const closeSecondDialog = useContentTypeStore(
-    (state) => state.closeSecondDialog
+  const closeAttributeDialog = useContentTypeStore(
+    (state) => state.closeAttributeDialog
   );
+
+  const [isSecondStep, setIsSecondStep] = useState(false);
 
   return (
     <>
@@ -51,41 +44,50 @@ function ContentTypePage() {
             Build the data architecture of your content
           </p>
         </div>
-        <Button
-          className="ml-auto hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)]"
-          variant="outline"
-          onClick={() => {
-            openSecondDialog();
-          }}
-        >
-          + Add another field
-        </Button>
+        <div className="ml-auto flex items-center gap-2">
+          <Button
+            className="hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)] gap-1"
+            variant="outline"
+            onClick={() => {
+              openAttributeDialog();
+            }}
+          >
+            <Plus /> Add another field
+          </Button>
+          <Button
+            className="hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)] gap-1"
+            variant="outline"
+            // onClick={() => {
+            //   openSecondDialog();
+            // }}
+          >
+            <Check /> Save
+          </Button>
+        </div>
       </div>
       <div className="flex flex-col border-1 p-14 w-full"></div>
 
       <Dialog
-        open={isSecondDialogOpen}
+        open={isAttributeDialogOpen}
         onOpenChange={(open) => {
-          if (!open) closeSecondDialog();
+          if (!open) {
+            closeAttributeDialog();
+            // Checked the onCloseComplete attribute and it doesn't exist
+            setTimeout(() => {
+              setIsSecondStep(false);
+            }, 300);
+          }
         }}
       >
-        <DialogContent className="sm:max-w-md gap-6">
-          <DialogHeader className="border-b pb-6">
-            <DialogTitle>
-              {contentType?.name || 'Content Type Builder'}
-            </DialogTitle>
-            <DialogDescription>
-              Select a field for your collection type
-            </DialogDescription>
-          </DialogHeader>
-          <SecondDialogContent />
-          <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
+        <DialogContent className="sm:max-w-md md:max-w-220 gap-6">
+          {isSecondStep ? (
+            'THE SECOND STEP'
+          ) : (
+            <FirstStepAttributeDialog
+              title={contentType?.name}
+              setIsSecondStep={setIsSecondStep}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>

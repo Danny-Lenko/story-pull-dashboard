@@ -5,7 +5,7 @@ import {
   SidebarGroupContent,
   SidebarHeader,
 } from '@/components/ui/sidebar';
-import { outerSidebarWidth } from '~/lib/consts-style';
+import { outerSidebarWidth } from '~/lib/const/consts-style';
 
 import MenuSection from '~/components/dedicated/layout/inner-sidebar/menu-section';
 import { useLocation, useNavigate } from 'react-router';

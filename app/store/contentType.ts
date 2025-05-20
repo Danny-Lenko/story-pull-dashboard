@@ -3,17 +3,21 @@ import { create } from 'zustand';
 export interface ContentType {
   name: string;
   url: string;
+  attributes?: {
+    [key: string]: any;
+  };
+  collectionName?: string;
 }
 
 interface ContentTypeStore {
-  isSecondDialogOpen: boolean;
+  isAttributeDialogOpen: boolean;
   isContentTypeCreation: boolean;
 
   newContentType: ContentType | null;
   pendingContentType: ContentType | null;
 
-  openSecondDialog: () => void;
-  closeSecondDialog: () => void;
+  openAttributeDialog: () => void;
+  closeAttributeDialog: () => void;
 
   startContentTypeCreation: () => void;
   stopContentTypeCreation: () => void;
@@ -26,14 +30,14 @@ interface ContentTypeStore {
 }
 
 export const useContentTypeStore = create<ContentTypeStore>()((set) => ({
-  isSecondDialogOpen: false,
+  isAttributeDialogOpen: false,
   isContentTypeCreation: false,
 
   newContentType: null,
   pendingContentType: null,
 
-  openSecondDialog: () => set({ isSecondDialogOpen: true }),
-  closeSecondDialog: () => set({ isSecondDialogOpen: false }),
+  openAttributeDialog: () => set({ isAttributeDialogOpen: true }),
+  closeAttributeDialog: () => set({ isAttributeDialogOpen: false }),
 
   startContentTypeCreation: () => set({ isContentTypeCreation: true }),
   stopContentTypeCreation: () => set({ isContentTypeCreation: false }),
