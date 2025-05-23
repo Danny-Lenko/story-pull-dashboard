@@ -4,6 +4,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogContent,
 } from '~/components/ui/dialog';
 import { Button } from '~/components/ui/button';
 import { fieldTypes } from '~/lib/const/content-type-builder';
@@ -11,9 +12,11 @@ import { fieldTypes } from '~/lib/const/content-type-builder';
 export const FirstStepAttributeDialog = ({
   title,
   setIsSecondStep,
+  setFieldName,
 }: {
   title?: string;
   setIsSecondStep: (value: boolean) => void;
+  setFieldName: (value: string) => void;
 }) => {
   return (
     <>
@@ -31,7 +34,10 @@ export const FirstStepAttributeDialog = ({
               key={fieldType.name}
               variant="outline"
               className="flex min-h-min justify-start gap-4 !pl-7"
-              onClick={() => setIsSecondStep(true)}
+              onClick={() => {
+                setFieldName(fieldType.name);
+                setIsSecondStep(true);
+              }}
             >
               {Icon && <Icon className="size-7" />}
               <div className="text-start">

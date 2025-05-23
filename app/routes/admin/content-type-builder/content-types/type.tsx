@@ -6,6 +6,7 @@ import { withContentTypeGuard } from '~/lib/hoc/withContentTypeGuard';
 import { Check, Plus } from 'lucide-react';
 import { FirstStepAttributeDialog } from '~/components/dedicated/admin/content-type-builder/content-types/type/first-step-attribute-dialog';
 import { useState } from 'react';
+import { SecondStepAttributeDialog } from '~/components/dedicated/admin/content-type-builder/content-types/type/second-step-attribute-dialog';
 
 // TODO: ADD TITLES FROM EXISTING CONTENT TYPES
 
@@ -32,6 +33,7 @@ function ContentTypePage() {
   );
 
   const [isSecondStep, setIsSecondStep] = useState(false);
+  const [fieldName, setFieldName] = useState('');
 
   return (
     <>
@@ -81,11 +83,16 @@ function ContentTypePage() {
       >
         <DialogContent className="sm:max-w-md md:max-w-220 gap-6">
           {isSecondStep ? (
-            'THE SECOND STEP'
+            <SecondStepAttributeDialog
+              title={contentType?.name}
+              fieldName={fieldName}
+              setIsSecondStep={setIsSecondStep}
+            />
           ) : (
             <FirstStepAttributeDialog
               title={contentType?.name}
               setIsSecondStep={setIsSecondStep}
+              setFieldName={setFieldName}
             />
           )}
         </DialogContent>
