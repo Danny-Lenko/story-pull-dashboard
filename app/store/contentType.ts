@@ -24,6 +24,7 @@ interface ContentTypeStore {
 
   resetNewContentType: () => void;
   defineNewContentType: (payload: ContentType) => void;
+  addContentTypeAttribute: (attribute: { name: string; type: string }) => void;
 
   resetPendingContentType: () => void;
   definePendingContentType: (payload: ContentType) => void;
@@ -50,6 +51,22 @@ export const useContentTypeStore = create<ContentTypeStore>()((set) => ({
         url: `/content-types/api::${payload.url}.${payload.url}`,
       },
     })),
+  addContentTypeAttribute: (attribute: { name: string; type: string }) =>
+    set((state) => {
+      if (!state.newContentType) return {};
+      return {
+        newContentType: {
+          ...state.newContentType,
+          name: state.newContentType.name,
+          url: state.newContentType.url,
+          collectionName: state.newContentType.collectionName,
+          attributes: {
+            ...state.newContentType.attributes,
+            [attribute.name]: attribute.type,
+          },
+        },
+      };
+    }),
 
   resetPendingContentType: () => set({ pendingContentType: null }),
   definePendingContentType: (payload: ContentType) =>

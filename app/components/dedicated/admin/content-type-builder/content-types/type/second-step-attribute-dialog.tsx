@@ -10,8 +10,35 @@ import { Button } from '~/components/ui/button';
 import { MoveLeft } from 'lucide-react';
 
 import { fieldTypes } from '~/lib/const/content-type-builder';
-import { Label } from '~/components/ui/label';
 import { Input } from '~/components/ui/input';
+
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '~/components/ui/form';
+import { useContentTypeStore } from '~/store/contentType';
+
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(2, {
+      message: 'Field name must be at least 2 characters.',
+    })
+    .max(30, {
+      message: 'Field name must be at most 30 characters.',
+    })
+    .regex(/^[a-z-]+$/, {
+      message: 'Сan only contain lowercase letters and hyphens.',
+    }),
+});
 
 export const SecondStepAttributeDialog = ({
   title,
@@ -25,6 +52,41 @@ export const SecondStepAttributeDialog = ({
   const fieldType = fieldTypes.find((field) => field.name === fieldName);
   const Icon = fieldType?.icon;
 
+  const newContentType = useContentTypeStore((state) => state.newContentType);
+  const addContentTypeAttribute = useContentTypeStore(
+    (state) => state.addContentTypeAttribute
+  );
+
+  const closeAttributeDialog = useContentTypeStore(
+    (state) => state.closeAttributeDialog
+  );
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+    },
+  });
+
+  function onSubmit(
+    values: z.infer<typeof formSchema>,
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    // console.log('Form submitted with values:', values);
+    const submitEvent = event.nativeEvent as SubmitEvent;
+    console.log('TARGET:', submitEvent?.submitter && (submitEvent.submitter as HTMLButtonElement).value);
+
+    closeAttributeDialog();
+
+    form.reset();
+  }
+
+  console.log('NEW CONTENT TYPE:', newContentType);
+
+  function saveAttribute(values: z.infer<typeof formSchema>) {
+    console.log('Saving attribute:', form.getValues());
+  }
+
   return (
     <>
       <DialogHeader className="border-b flex flex-row items-center pb-6">
@@ -35,6 +97,7 @@ export const SecondStepAttributeDialog = ({
         {Icon && <Icon className="size-6" />}
         <h3 className="font-semibold text-xl">{title}</h3>
       </DialogHeader>
+
       <div>
         <DialogTitle>Add new {fieldType?.name} field</DialogTitle>
         <DialogDescription>
@@ -42,19 +105,51 @@ export const SecondStepAttributeDialog = ({
         </DialogDescription>
       </div>
 
-      <div className="grid w-full max-w-sm items-center gap-1.5">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" placeholder="Email" />
-        <p></p>
-      </div>
+      <Form {...form}>
+        <form
+          onSubmit={(e) => form.handleSubmit((v) => onSubmit(v, e))(e)}
+          className="space-y-8"
+        >
+          <div className="grid grid-cols-2 w-full gap-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Field name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    No space is allowed for the name of the attribute
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div></div>
+          </div>
 
-      <DialogFooter className="sm:justify-start">
-        <DialogClose asChild>
-          <Button type="button" variant="secondary">
-            Close
-          </Button>
-        </DialogClose>
-      </DialogFooter>
+          <DialogFooter className="sm:justify-start">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+            <Button
+              type="submit"
+              className="ml-auto hover:no-underline text-[var(--link)] hover:text-[var(--link-hover)] gap-1"
+              variant="outline"
+              value="add-another"
+            >
+              + Add another field
+            </Button>
+            <Button type="submit" value="finish">
+              Finish
+            </Button>
+          </DialogFooter>
+        </form>
+      </Form>
     </>
   );
 };

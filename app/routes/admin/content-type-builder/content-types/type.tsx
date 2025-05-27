@@ -59,9 +59,6 @@ function ContentTypePage() {
           <Button
             className="hover:no-underline cursor-pointer text-[var(--link)] hover:text-[var(--link-hover)] gap-1"
             variant="outline"
-            // onClick={() => {
-            //   openSecondDialog();
-            // }}
           >
             <Check /> Save
           </Button>
