@@ -12,7 +12,7 @@ import { MoveLeft } from 'lucide-react';
 import { fieldTypes } from '~/lib/const/content-type-builder';
 import { Input } from '~/components/ui/input';
 
-import { z } from 'zod';
+import { set, z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import {
@@ -25,6 +25,10 @@ import {
   FormMessage,
 } from '~/components/ui/form';
 import { useContentTypeStore } from '~/store/contentType';
+
+// TODO: right now, the field name is not unique, so you override value each time.
+// This should be fixed in the future, so that each field name is unique within a content type.
+// This is done by adding a validation-like message 'This value is already used'
 
 const formSchema = z.object({
   name: z
@@ -45,8 +49,8 @@ export const SecondStepAttributeDialog = ({
   fieldName,
   setIsSecondStep,
 }: {
-  title?: string;
-  fieldName?: string;
+  title: string;
+  fieldName: string;
   setIsSecondStep: (value: boolean) => void;
 }) => {
   const fieldType = fieldTypes.find((field) => field.name === fieldName);
@@ -74,17 +78,34 @@ export const SecondStepAttributeDialog = ({
   ) {
     // console.log('Form submitted with values:', values);
     const submitEvent = event.nativeEvent as SubmitEvent;
-    console.log('TARGET:', submitEvent?.submitter && (submitEvent.submitter as HTMLButtonElement).value);
+    const submitValue =
+      submitEvent?.submitter &&
+      (submitEvent.submitter as HTMLButtonElement).value;
 
-    closeAttributeDialog();
+    console.log('VALUES:', values);
+    console.log('SUBMIT VALUE:', submitValue);
+    console.log('TITLE:', title);
+    console.log('FIELED NAME:', fieldName);
+
+    if (submitValue === 'add-another') {
+      addContentTypeAttribute({
+        name: values.name,
+        type: fieldName,
+      });
+
+      setIsSecondStep(false);
+    }
+
+    if (submitValue === 'finish') {
+      addContentTypeAttribute({
+        name: values.name,
+        type: fieldName,
+      });
+
+      closeAttributeDialog();
+    }
 
     form.reset();
-  }
-
-  console.log('NEW CONTENT TYPE:', newContentType);
-
-  function saveAttribute(values: z.infer<typeof formSchema>) {
-    console.log('Saving attribute:', form.getValues());
   }
 
   return (

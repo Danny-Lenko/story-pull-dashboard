@@ -30,8 +30,6 @@ export function InnerSidebar() {
   const pathname = pathParts[2];
   const paramsPath = '/' + pathParts[3] + '/' + pathParts[4];
 
-  console.log('LOCATION: ', paramsPath);
-
   const headerContent =
     pathname === 'content-type-builder'
       ? 'Content Type Builder'

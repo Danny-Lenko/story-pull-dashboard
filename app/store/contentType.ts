@@ -4,7 +4,9 @@ export interface ContentType {
   name: string;
   url: string;
   attributes?: {
-    [key: string]: any;
+    [key: string]: {
+      type: string;
+    };
   };
   collectionName?: string;
 }
@@ -57,12 +59,15 @@ export const useContentTypeStore = create<ContentTypeStore>()((set) => ({
       return {
         newContentType: {
           ...state.newContentType,
-          name: state.newContentType.name,
-          url: state.newContentType.url,
-          collectionName: state.newContentType.collectionName,
+          // name: state.newContentType.name,
+          // url: state.newContentType.url,
+          // collectionName: state.newContentType.collectionName,
           attributes: {
             ...state.newContentType.attributes,
-            [attribute.name]: attribute.type,
+            // [attribute.name]: attribute.type,
+            [attribute.name]: {
+              type: attribute.type,
+            },
           },
         },
       };
